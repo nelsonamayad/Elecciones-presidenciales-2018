@@ -2,24 +2,27 @@
 # PODER ENCUESTAS COL2018 #
 ###########################
 
-# Un intento de estimar el poder estadístico de las encuestas de intención de voto.
+# Fecha: 02/03/2018
 
-#1. Paquetes
-#2. Alistamiento
-#3. Poder
-#4. Gráficas
+# Objetivo: Un intento de estimar el poder estadístico de las encuestas de intención de voto.
+
+# Indice:
+    #1. Paquetes
+    #2. Alistamiento
+    #3. Poder
+    #4. Gráficas
 
 ########################## PAQUETES ############################
 
-rm(list = ls())      #Limpiar ambiente R
+rm(list = ls())      #Limpiar ambiente en R
 library(devtools)    #Instalar paquete de desarrollo antes de comenzar
-install_github("espanta/lubripack")     #Instalar lubripack para instalar y cargar varios paquetes de una
-lubripack::lubripack("pwr","clusterPower","sampling","tidyverse","RCurl")
+install_github("espanta/lubripack")     #Instalar lubripack para instalar y cargar varios paquetes a la vez
+lubripack::lubripack("pwr","clusterPower","sampling","tidyverse","RCurl")    #paquetes
 
 ########################## ALISTAMIENTO ###########################
 options(encoding = "UTF-8")
 
-#Cargar encuestas
+# Cargar encuestas
 encuestas <- read.csv(text=getURL("https://raw.githubusercontent.com/nelsonamayad/Elecciones-presidenciales-2018/master/col2018.csv"), header=T)
 
 ########################## PODER ##################################
@@ -114,7 +117,7 @@ d.eff.1 <- tribble(~n, ~power1,
 ########################## GRAFICAS ################################
 
 # Efecto 1%:
-ggplot(data=filter(pow, n!=14), aes(x=power1, y=muestra_int_voto)) + #excluye encuesta atípica #14
+ggplot(data=filter(pow, n!=14), aes(x=power1, y=muestra_int_voto)) + #excluye encuesta atípica #14 por falta de verificacion de N
   geom_jitter(aes(shape=encuestadora, color=encuestadora), size=4) +
   geom_vline(xintercept=0.8, linetype="dashed") +
   #geom_label(aes(label = n)) + 
