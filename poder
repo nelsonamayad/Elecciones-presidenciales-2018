@@ -12,7 +12,7 @@
     #3. Poder
     #4. Gráficas
 
-########################## PAQUETES ############################
+########################## PAQUETES ###############################
 
 rm(list = ls())      #Limpiar ambiente en R
 library(devtools)    #Instalar paquete de desarrollo antes de comenzar
