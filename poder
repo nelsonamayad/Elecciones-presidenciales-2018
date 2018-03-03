@@ -126,4 +126,4 @@ ggplot(data=filter(pow, n!=14), aes(x=power1, y=muestra_int_voto)) + #excluye en
        title="Bajos de poder",
        subtitle="Poder post hoc para detectar diferencias de 1% según info de muestreo en fichas técnicas",
        caption="Fuente: Cálculos en R usando test pwr.p.test y G*Power (v.3.1.9.2)"
-       )
+       ) 
