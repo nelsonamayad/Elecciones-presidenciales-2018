@@ -114,7 +114,7 @@ d.eff.1 <- tribble(~n, ~power1,
 ########################## GRAFICAS ################################
 
 # Efecto 1%:
-ggplot(data=filter(pow, n!=14), aes(x=power2, y=muestra_int_voto)) + #excluye encuesta atípica #14
+ggplot(data=filter(pow, n!=14), aes(x=power1, y=muestra_int_voto)) + #excluye encuesta atípica #14
   geom_jitter(aes(shape=encuestadora, color=encuestadora), size=4) +
   geom_vline(xintercept=0.8, linetype="dashed") +
   #geom_label(aes(label = n)) + 
@@ -123,7 +123,7 @@ ggplot(data=filter(pow, n!=14), aes(x=power2, y=muestra_int_voto)) + #excluye en
   scale_x_continuous(limits=c(0,1), breaks=c(0,0.2,0.4,0.6,0.8,1)) +
   labs(y="Muestra de la encuesta", 
        x="Poder de la encuesta", 
-       title="Bajos de poder #2",
-       subtitle="Poder post hoc para detectar diferencias de 2% segÃºn info de muestreo en fichas tÃ©cnicas",
+       title="Bajos de poder",
+       subtitle="Poder post hoc para detectar diferencias de 1% según info de muestreo en fichas técnicas",
        caption="Fuente: Cálculos en R usando test pwr.p.test y G*Power (v.3.1.9.2)"
        )
