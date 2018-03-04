@@ -2,8 +2,8 @@
 # PODER ENCUESTAS COL2018 #
 ###########################
 
-# Fecha: 02/03/2018
-
+# Fecha: 04/03/2018
+# Encuestas a la fecha: 24
 # Objetivo: Un intento de estimar el poder estadístico de las encuestas de intención de voto.
 
 # Indice:
@@ -40,7 +40,7 @@ encuestas <- read.csv(text=getURL("https://raw.githubusercontent.com/nelsonamaya
 ----------------------------------------------------------------------------------------------------
 # Poder para una proporcion mayor a cierto nivel con pwr.p.test: h (H1, H0), n (muestra), sig.level (alpha), una sola cola
 ----------------------------------------------------------------------------------------------------
-cons.1 <- 0.5      #Encuestas #: 3-4, 6-9, 16. Default para encuestas #: 1, 10, 12, 14, 18, 21, 22 
+cons.1 <- 0.5      #Encuestas #: 3-4, 6-9, 16. Default para encuestas #: 1, 10, 12, 14, 18, 21, 22, 24
 cons.2 <- 0.2      #Encuestas #: 2, 5, 13, 17, 19, 23
 cons.3 <- 0.25     #Encuestas #: 11
 cons.4 <- 0.14     #Encuestas #: 15, 20
@@ -85,6 +85,7 @@ pow.14 <- pwr.p.test(h = ES.h(eff.1+cons.1, cons.1), sig.level = a, alternative 
 pow.18 <- pwr.p.test(h = ES.h(eff.1+cons.1, cons.1), sig.level = a, alternative = "greater", n = encuestas$muestra_int_voto[18])
 pow.21 <- pwr.p.test(h = ES.h(eff.1+cons.1, cons.1), sig.level = a, alternative = "greater", n = encuestas$muestra_int_voto[21])
 pow.22 <- pwr.p.test(h = ES.h(eff.1+cons.1, cons.1), sig.level = a, alternative = "greater", n = encuestas$muestra_int_voto[22])
+pow.24 <- pwr.p.test(h = ES.h(eff.1+cons.1, cons.1), sig.level = a, alternative = "greater", n = encuestas$muestra_int_voto[24])
 
 # Tribble con los resultados
 d.eff.1 <- tribble(~n, ~power1, 
@@ -110,7 +111,8 @@ d.eff.1 <- tribble(~n, ~power1,
                    20, pow.20[[4]],
                    21, pow.13[[4]],
                    22, pow.13[[4]],
-                   23, pow.23[[4]]
+                   23, pow.23[[4]],
+                   24, pow.24[[4]]
                    )
 ## Se puede repetir con un loop para otros tamaños de efectos
 
