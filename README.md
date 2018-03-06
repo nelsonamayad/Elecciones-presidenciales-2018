@@ -7,6 +7,6 @@ Repositorio abierto de análsis pre-electoral para las presidenciales de Colombi
 
 Si usa R, importe las encuestas 2018 en 3 pasos:
 
-- install.packages("RCurl") #Instale RCurl
-- library(RCurl) #Cargue RCurl
+- install.packages("RCurl")   #Instale RCurl
+- library(RCurl)              #Cargue RCurl
 - encuestas2018 <- read.csv(text=getURL("https://raw.githubusercontent.com/nelsonamayad/Elecciones-presidenciales-2018/master/col2018.csv"))
