@@ -2,7 +2,6 @@
 # PODER ENCUESTAS COL2018 #
 ###########################
 
-# Fecha: 04/03/2018
 # Encuestas a la fecha: 25
 # Objetivo: Un intento de estimar el poder estadístico de las encuestas de intención de voto en R.
 
@@ -121,19 +120,19 @@ d.eff.1 <- tribble(~n, ~power1,
 ########################## GRAFICA ################################
 
 # Efecto 1%:
-ggplot(data=filter(pow, n!=14), aes(x=power1, y=muestra_int_voto)) + #excluye encuesta atípica #14 por falta de verificacion de N
-  geom_jitter(aes(shape=encuestadora, color=encuestadora), size=4) +
-  geom_vline(xintercept=0.8, linetype="dashed") +
+ggplot(data=filter(pow), aes(x=power1, y=muestra_int_voto))
+  geom_jitter(aes(shape=encuestadora, color=encuestadora), size=4) +               #Datos 1%
+  geom_vline(xintercept=0.8, linetype="dashed") +                                  #linea de 80% de poder
   theme(legend.position="bottom", legend.title=element_blank(), panel.background=element_rect(fill="white", color="grey70")) +
-  scale_y_continuous(limits=c(0,3500)) +
+  scale_y_continuous(limits=c(0,12000)) +
   scale_x_continuous(limits=c(0,1), breaks=c(0,0.2,0.4,0.6,0.8,1)) +
   labs(y="Muestra de la encuesta", 
        x="Poder de la encuesta", 
        title="Bajos de poder",
-       subtitle="Poder post hoc para detectar diferencias de 1% según info de muestreo en fichas técnicas",
+       subtitle="Poder post hoc de las encuestas (N=25) para detectar diferencias de 1%",
        caption="Fuente: Cálculos en R usando test pwr.p.test y G*Power (v.3.1.9.2)"
        ) 
 
-# CONCLUSIONES:
-- Ninguna encuesta tiene el poder suficiente para detectar diferencias de 1% entre los candidatos. 
-- Solo 2 encuestas de Cifras & Conceptos tienen más de 80% de poder para detectar efectos de diferencias de 2%, seguidas por Guarumo con 77% de poder
+# CONCLUSIONES: 
+- Ninguna encuesta tienen poder suficiente para detectar diferencias de 1% entre los candidatos. Eso es normal.
+- Solo Cifras & Conceptos y una encuesta telefonica del CNC tienen más de 80% de poder para detectar efectos de diferencias de 2%, y Guarumo esta cerca con ~77% 
