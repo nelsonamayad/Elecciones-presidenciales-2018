@@ -1,6 +1,6 @@
 n,fecha,encuestadora,muestra,si,no,abstencion,margen_error,fuente,ficha
-1,07/07/2016,Ipsos,ND,56,39,ND,ND,Informador23,ND	
-2,07/08/2016,Ipsos,1000,39,50,11,3.1,Notcias RCN24,"http://www.noticiasrcn.com/sites/default/files/if-16-012871-05-_colombia_opina_2016_m3_-_v1.pdf"
+1,07/07/2016,Ipsos,ND,56,39,ND,ND,Informador,ND	
+2,07/08/2016,Ipsos,1000,39,50,11,3.1,Notcias RCN,"http://www.noticiasrcn.com/sites/default/files/if-16-012871-05-_colombia_opina_2016_m3_-_v1.pdf"
 3,18/08/2016,Invamer,1200,67,32.5,ND,5,Noticias Caracol,"http://media.caracoltv.co/Noticias/ENCUESTA%20PLEBISCITO.pdf"
 4,26/08/2016,Datexco,700,39.2,27.7,10.5,3.7,El Tiempo,"http://www.eltiempo.com/politica/proceso-de-paz/encuesta-sobre-plebiscito-por-la-paz-34086"
 5,02/09/2016,Cifras&Conceptos,2305,62,28,10,2.2,Caracol Radio,"http://caracol.com.co/programa/2016/09/02/6am_hoy_por_hoy/1472816572_060253.html"
