@@ -133,3 +133,7 @@ ggplot(data=filter(pow, n!=14), aes(x=power1, y=muestra_int_voto)) + #excluye en
        subtitle="Poder post hoc para detectar diferencias de 1% según info de muestreo en fichas técnicas",
        caption="Fuente: Cálculos en R usando test pwr.p.test y G*Power (v.3.1.9.2)"
        ) 
+
+# CONCLUSIONES:
+- Ninguna encuesta tiene el poder suficiente para detectar diferencias de 1% entre los candidatos. 
+- Solo 2 encuestas de Cifras & Conceptos tienen más de 80% de poder para detectar efectos de diferencias de 2%, seguidas por Guarumo con 77% de poder
