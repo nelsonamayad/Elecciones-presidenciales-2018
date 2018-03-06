@@ -1,0 +1,30 @@
+n,fecha,encuestadora,vuelta,clara_lopez,enrique_penalosa,marta_lucia_ramirez,juan_m_santos,oscar_i_zuluaga,blanco,ninguno,ns/nr,margen_error	fuente
+1,3/16/2014,Datexco,1,10.7,17.1,7.7,25.5,14.6,16.9,7.5,3.1,"El Tiempo"
+2,3/18/2014,CNC,1,10,16,9,30,10,8,5,12,3,"CM&"
+3,3/19/2014,Gallup,1,8.6,11.3,9.3,32.5,15.6,19.6,2.7,3,	"La República"
+4,3/20/2014,Ipsos,1,9,8,4,24,9,19,3,27,3.3,"Semana"
+5,3/26/2014,CNC,1,10,18,7,27,13,8,5,12,2.5,"El Nuevo Siglo"
+6,3/31/2014,CNC,1,9,18,8,26,13,8,2.5,"CM&"
+7,3/31/2014,Cifras&Conceptos,1,9,13,5,26,11,26,13,2.9,"Cifras y Conceptos"
+8,3/31/2014,CNC,1,8,17,7,27,15,0,2.5,"Tresquintos"
+9,4/26/2014,Ipsos,1,6,11,6,23,15,14,1,22,3.3,"Semana"
+10,4/26/2014,Datexco,1,9.6,15.7,7.2,28.3,16,17.3,5.8,2.8,"El Tiempo"
+11,4/29/2014,Gallup,1,7.1,10.1,11.2,32,20.5,15.9,3.2,3.4,"La República"
+12,5/5/2014,CNC,1,11,13,10,23,22,7,14,3,"CM&"
+13,5/6/2014,Cifras&Conceptos,1,10,10,8,26,19,17,8,2.9,"Cifras y Conceptos"
+14,5/11/2014,Infométrika,1,8.6,9.8,4.6,31.3,29.6,9.9,6.2,2.1,"Fundación CorreLibre"
+15,5/12/2014,CNC,1,9,13,9,22,24,9,14,2.5,	"El Espectador"
+16,5/15/2014,Cifras&Conceptos,1,10,9.7,8.7,27.7,23.9,11.5,8.5,2.9,"Cifras y Conceptos"
+17,5/16/2014,Datexco,1,9.7,9.7,9.4,27.7,25.6,15,2.9,2.8,"El Tiempo"
+18,5/16/2014,Gallup,1,10.9,10.6,14.4,29,29.3,5.8,3.7,"La República"
+19,5/17/2014,Ipsos,1,10.1,9.4,9.7,28.5,29.5,12.8,2.1,"La FM"
+20,5/25/2014,Resultado,1,15.2,8.3,15.5,25.7,29.3,6				
+21,5/29/2014,Cifras&Conceptos,2,38,37,15,10,2.9,"Semana"
+22,5/30/2014,CNC,2,,,,45,47,8,2.2,"CM&"
+23,6/5/2014,Datexco,2,,,,41.9,37.7,13.8,5.8,2.8,"El Tiempo"
+24,6/5/2014,Gallup,2,,,,47.7,48.5,3.7,5,"El Espectador"
+25,6/6/2014,Cifras&Conceptos,,,,2,43.4,38.5,11.7,2.9,"El Tiempo"
+26,6/6/2014,Ipsos,,,,2,41,49,10,3.4,"El Tiempo"
+27,6/15/2014,Resultado,2,,,,51,45,4				
+
+Fuente: https://es.wikipedia.org/wiki/Elecciones_presidenciales_de_Colombia_de_2014
