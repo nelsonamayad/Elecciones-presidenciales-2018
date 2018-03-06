@@ -118,7 +118,7 @@ d.eff.1 <- tribble(~n, ~power1,
 )
 ## Se puede repetir con un loop para otros tamaños de efectos
 
-########################## GRAFICAS ################################
+########################## GRAFICA ################################
 
 # Efecto 1%:
 ggplot(data=filter(pow, n!=14), aes(x=power1, y=muestra_int_voto)) + #excluye encuesta atípica #14 por falta de verificacion de N
