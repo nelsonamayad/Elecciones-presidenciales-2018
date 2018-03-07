@@ -22,7 +22,7 @@ lubripack::lubripack("pwr","clusterPower","sampling","tidyverse","RCurl")    #pa
 options(encoding = "UTF-8")
 
 # Cargar encuestas
-encuestas <- read.csv(text=getURL("https://raw.githubusercontent.com/nelsonamayad/Elecciones-presidenciales-2018/master/encuestas2018.csv"), header=T)
+encuestas <- read.csv(text=getURL("https://raw.githubusercontent.com/nelsonamayad/Elecciones-presidenciales-2018/master/Elecciones%202018/encuestas2018.csv"), header=T)
 
 ########################## PODER ##################################
 # Ya que algunas fichas técnicas de las encuestas reportan márgenes de error para cierto tipo de pruebas (e.g. "el margen de error 
