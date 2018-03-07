@@ -3,7 +3,7 @@ Repositorio abierto de análsis pre-electoral para las presidenciales de Colombi
 
 - Datos básicos de las encuestas
 - Datos básicos de las encuestas que se hicieron para las elecciones 2014 y el plebiscito 2016
-- Resultados electorales
+- Resultados electorales y pre-electorales (consultas, candidaturas por firmas, etc.)
 - Fichas técnicas
 - Más cosas, si el tiempo lo permite
 
