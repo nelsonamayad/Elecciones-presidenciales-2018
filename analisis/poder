@@ -133,6 +133,7 @@ ggplot(data=filter(pow), aes(x=power1, y=muestra_int_voto))
        caption="Fuente: Cálculos en R usando test pwr.p.test y G*Power (v.3.1.9.2)"
        ) 
 
-# CONCLUSIONES: 
-- Ninguna encuesta tienen poder suficiente para detectar diferencias de 1% entre los candidatos. Eso es normal.
-- Solo Cifras & Conceptos y una encuesta telefonica del CNC tienen más de 80% de poder para detectar efectos de diferencias de 2%, y Guarumo esta cerca con ~77% 
+# CONCLUSION: Ninguna encuesta tienen poder suficiente para detectar diferencias de 1% entre los candidatos. Eso es normal.
+
+# EXTENSION: Si repite el analisis con 2% en vez de 1%, solo Cifras & Conceptos y una encuesta telefonica del CNC 
+# tienen más de 80% de poder para detectar ese efecto. Una de Guarumo esta cerca con ~77%.
