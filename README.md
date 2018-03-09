@@ -1,6 +1,6 @@
 # Elecciones presidenciales Colombia 2018 #
 
-Vea las tendencias en la intencion de voto aca: [Sites Using React](https://nelsonamayad.shinyapps.io/col2018_tend/)
+Si quiere ver cómo va la intención de voto para cada candidato, [entre acá](https://nelsonamayad.shinyapps.io/col2018_tend/)
 
 Repositorio abierto de análsis pre-electoral para las presidenciales de Colombia en 2018 con:
 
