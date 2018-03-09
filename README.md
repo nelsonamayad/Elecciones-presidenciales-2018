@@ -1,13 +1,15 @@
-# Elecciones presidenciales Colombia 2018 #
+h1(# Elecciones presidenciales Colombia 2018 #)
 
-Si quiere ver cómo va la intención de voto para cada candidato, [entre acá](https://nelsonamayad.shinyapps.io/col2018_tend/)
+Repositorio abierto de datos y algo de análsis pre-electoral para las presidenciales de Colombia en 2018.
 
-Repositorio abierto de análsis pre-electoral para las presidenciales de Colombia en 2018 con:
+Si quiere ver cómo va la intención de voto para cada candidato, [entre acá.](https://nelsonamayad.shinyapps.io/col2018_tend/)
 
-- Datos básicos de las encuestas
+Si quiere analizar los datos, en las carpetas arriba hay:
+
+- Datos básicos de las encuestas tabulados y fáciles de usar
 - Datos básicos de las encuestas que se hicieron para las elecciones 2014 y el plebiscito 2016
 - Resultados electorales y pre-electorales (consultas, candidaturas por firmas, etc.)
-- Fichas técnicas
+- Fichas técnicas de las encuestas que se consiguen
 - Más cosas, si el tiempo lo permite
 
 Si usa R, importe las encuestas 2018 en 3 pasos:
