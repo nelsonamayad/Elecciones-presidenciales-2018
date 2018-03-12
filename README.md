@@ -6,7 +6,7 @@ Si quiere ver cómo va la intención de voto para cada candidato, [entre acá.](
 
 Si quiere analizar los datos, en las carpetas arriba puede encontrar:
 
-- Datos básicos de las encuestas fáciles de usar (en CSV)
+- Datos básicos de las encuestas y de los resultados electorales fáciles de usar (en CSV)
 - Datos básicos de las encuestas que se hicieron para las elecciones 2014 y el plebiscito 2016
 - Resultados electorales y pre-electorales (consultas, candidaturas por firmas, etc.)
 - Fichas técnicas de las encuestas que se consiguen
