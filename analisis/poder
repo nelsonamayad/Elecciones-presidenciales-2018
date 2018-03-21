@@ -118,6 +118,8 @@ d.eff.1 <- tribble(~n, ~power1,
 ## Se puede repetir con un loop para otros tamaños de efectos
 
 ########################## GRAFICA ################################
+#Pegar poder a encuestas
+pow <- left_join(select(encuestas, n, fecha, encuestadora, muestra_int_voto), d.eff.1, by = "n")
 
 # Efecto 1%:
 ggplot(data=filter(pow), aes(x=power1, y=muestra_int_voto))
