@@ -136,7 +136,7 @@ ggplot(data=filter(pow), aes(x=power1, y=muestra_int_voto))+
   labs(y="Muestra de la encuesta", 
        x="Poder de la encuesta", 
        title="Bajos de poder",
-       subtitle="Poder post hoc de las encuestas (N=25) para detectar diferencias de 1%",
+       subtitle="Poder post hoc de las encuestas (N=27) para detectar diferencias de 1%",
        caption="Fuente: Cálculos en R usando test pwr.p.test y G*Power (v.3.1.9.2)"
        ) 
 
