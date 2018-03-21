@@ -112,7 +112,7 @@ d.eff.1 <- tribble(~n, ~power1,
                    21, pow.13[[4]],
                    22, pow.13[[4]],
                    23, pow.23[[4]],
-                   24, pow.24[[4]]
+                   24, pow.24[[4]],
                    25, pow.25[[4]]
 )
 ## Se puede repetir con un loop para otros tamaños de efectos
