@@ -122,7 +122,7 @@ d.eff.1 <- tribble(~n, ~power1,
 pow <- left_join(select(encuestas, n, fecha, encuestadora, muestra_int_voto), d.eff.1, by = "n")
 
 # Efecto 1%:
-ggplot(data=filter(pow), aes(x=power1, y=muestra_int_voto))
+ggplot(data=filter(pow), aes(x=power1, y=muestra_int_voto))+
   geom_jitter(aes(shape=encuestadora, color=encuestadora), size=4) +               #Datos 1%
   geom_vline(xintercept=0.8, linetype="dashed") +                                  #linea de 80% de poder
   theme(legend.position="bottom", legend.title=element_blank(), panel.background=element_rect(fill="white", color="grey70")) +
