@@ -2,7 +2,7 @@
 # PODER ENCUESTAS COL2018 #
 ###########################
 
-# Encuestas a la fecha: 27
+# Encuestas a la fecha: 30
 # Objetivo: Un intento de estimar el poder estadístico de las encuestas de intención de voto en R.
 
 # Indice:
@@ -31,26 +31,32 @@ encuestas <- read.csv(text=getURL("https://raw.githubusercontent.com/nelsonamaya
 # (casi siempre 95%) y dejando que varíe el tamaño del efecto (de 1% a 5% de diferencia).
 
 # Limitaciones:
-#1. No se incluyen clusters, así que la correlación inter-cluster se asume cero y eso infla el poder.
-#2. Para las encuestas que no mencionan el tipo de prueba se asume una prueba de diferencia de proporciones mayor a 50%.
+#1. No se incluyen clusters, así que la correlación intra-cluster se asume cero y eso infla el poder.
+#2. Para las encuestas que no mencionan el tipo de prueba se asume una prueba de diferencia de proporciones mayor a 50% (la que abajo
+# se denomina "Default").
+# 3. Se utilizan los programas del paquete pwr en R.
 
-########################################################################################################
-# Cálculos de poder para proporciones p: H0: p = X, H1: p > X + e. Test de una sola cola (mayor a alpha)
-# Poder para una proporcion mayor a cierto nivel con pwr.p.test: h (H1, H0), n (muestra), sig.level (alpha), una sola cola
+########################## SUPUESTOS ###############################
+# Cálculos de poder para proporciones (p) son un test de una sola cola (i.e. mayor a alpha) de la siguiente forma: 
+# H0: p = X
+# H1: p > X + e, donde e es la proporcion especificada en la ficha tecnica de la encuesta
 
-cons.1 <- 0.5      #Encuestas #: 3-4, 6-9, 16. Default para encuestas #: 1, 10, 12, 14, 18, 21, 22, 24,25
+# pwr.p.test se define así: h (H1, H0), n (muestra), sig.level (alpha), y la opcion de una sola cola
+
+cons.1 <- 0.5      #Encuestas #: 3-4, 6-9, 16. Default para encuestas #: 1, 10, 12, 14, 18, 21, 22, 24,25, 28, 29
 cons.2 <- 0.2      #Encuestas #: 2, 5, 13, 17, 19, 23
 cons.3 <- 0.25     #Encuestas #: 11
 cons.4 <- 0.14     #Encuestas #: 15, 20
 cons.5 <- 0.24     #Encuestas: 27
+cons.6 <- 0.35     #Encuestas: 30
 eff.1 <- 0.01      #Efecto a detectar 1%
 eff.2 <- 0.02      #Efecto a detectar 2%
 eff.5 <- 0.05      #Efecto a detectar 2%
 a = 0.05           #Nivel de confianza 95%
 
-#############
-# Efecto 1%:
-############# 
+#####################################
+# Efecto diminuto: 1% de diferencia #
+#####################################
 
 # Encuestas con proporción mayor a 50%:
 pow.3 <- pwr.p.test(h = ES.h(eff.1+cons.1, cons.1), sig.level = a, alternative = "greater", n = encuestas$muestra_int_voto[3])
@@ -79,6 +85,9 @@ pow.27 <- pwr.p.test(h = ES.h(eff.1+cons.5, cons.5), sig.level = a, alternative 
 pow.15 <- pwr.p.test(h = ES.h(eff.1+cons.4, cons.4), sig.level = a, alternative = "greater", n = encuestas$muestra_int_voto[15])
 pow.20 <- pwr.p.test(h = ES.h(eff.1+cons.4, cons.4), sig.level = a, alternative = "greater", n = encuestas$muestra_int_voto[20])
 
+# Encuestas con proporción mayor a 35%:
+pow.30 <- pwr.p.test(h = ES.h(eff.1+cons.6, cons.6), sig.level = a, alternative = "greater", n = encuestas$muestra_int_voto[30])
+
 # Default para las que no especifican: proporción mayor a 50%:
 pow.1 <- pwr.p.test(h = ES.h(eff.1+cons.1, cons.1), sig.level = a, alternative = "greater", n = encuestas$muestra_int_voto[1])
 pow.10 <- pwr.p.test(h = ES.h(eff.1+cons.1, cons.1), sig.level = a, alternative = "greater", n = encuestas$muestra_int_voto[10])
@@ -89,6 +98,9 @@ pow.21 <- pwr.p.test(h = ES.h(eff.1+cons.1, cons.1), sig.level = a, alternative 
 pow.22 <- pwr.p.test(h = ES.h(eff.1+cons.1, cons.1), sig.level = a, alternative = "greater", n = encuestas$muestra_int_voto[22])
 pow.24 <- pwr.p.test(h = ES.h(eff.1+cons.1, cons.1), sig.level = a, alternative = "greater", n = encuestas$muestra_int_voto[24])
 pow.25 <- pwr.p.test(h = ES.h(eff.1+cons.1, cons.1), sig.level = a, alternative = "greater", n = encuestas$muestra_int_voto[25])
+pow.28 <- pwr.p.test(h = ES.h(eff.1+cons.1, cons.1), sig.level = a, alternative = "greater", n = encuestas$muestra_int_voto[28])
+pow.29 <- pwr.p.test(h = ES.h(eff.1+cons.1, cons.1), sig.level = a, alternative = "greater", n = encuestas$muestra_int_voto[29])
+
 
 # Tribble con los resultados
 d.eff.1 <- tribble(~n, ~power1, 
@@ -118,8 +130,13 @@ d.eff.1 <- tribble(~n, ~power1,
                    24, pow.24[[4]],
                    25, pow.25[[4]],
                    26, pow.26[[4]],
-                   27, pow.27[[4]]
+                   27, pow.27[[4]],
+                   28, pow.28[[4]],
+                   29, pow.29[[4]],
+                   30, pow.30[[4]]
+                   
 )
+
 ## Se puede repetir con un loop para otros tamaños de efectos
 
 ########################## GRAFICA ################################
@@ -138,7 +155,8 @@ ggplot(data=filter(pow), aes(x=power1, y=muestra_int_voto))+
        title="Bajos de poder",
        subtitle="Poder post hoc de las encuestas (N=27) para detectar diferencias de 1%",
        caption="Fuente: Cálculos en R usando test pwr.p.test y G*Power (v.3.1.9.2)"
-       ) 
+       ) +
+  scale_shape_manual(values=shape_enc)c(4,16,17,3,15,25,8)
 
 # CONCLUSION: Ninguna encuesta tienen poder suficiente para detectar diferencias de 1% entre los candidatos. Eso es normal.
 
