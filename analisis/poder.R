@@ -31,7 +31,8 @@ encuestas <- read.csv(text=getURL("https://raw.githubusercontent.com/nelsonamaya
 # (casi siempre 95%) y dejando que varíe el tamaño del efecto (de 1% a 5% de diferencia).
 
 # Limitaciones:
-#1. No se incluyen clusters, así que la correlación intra-cluster se asume cero y eso infla el poder.
+#1. No se incluyen clusters, así que la correlación intra-cluster se asume cero y eso infla el poder. Desafortunadamente, no es posible 
+# reconstruir la varianza dentro de la estratificacion de las muestras que hacen las encuestas.
 #2. Para las encuestas que no mencionan el tipo de prueba se asume una prueba de diferencia de proporciones mayor a 50% (la que abajo
 # se denomina "Default").
 # 3. Se utilizan los programas del paquete pwr en R.
