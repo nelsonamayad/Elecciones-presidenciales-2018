@@ -156,7 +156,7 @@ ggplot(data=filter(pow), aes(x=power1, y=muestra_int_voto))+
        subtitle="Poder post hoc de las encuestas (N=27) para detectar diferencias de 1%",
        caption="Fuente: Cálculos en R usando test pwr.p.test y G*Power (v.3.1.9.2)"
        ) +
-  scale_shape_manual(values=shape_enc)c(4,16,17,3,15,25,8)
+  scale_shape_manual(4,16,17,3,15,25,8)
 
 # CONCLUSION: Ninguna encuesta tienen poder suficiente para detectar diferencias de 1% entre los candidatos. Eso es normal.
 
