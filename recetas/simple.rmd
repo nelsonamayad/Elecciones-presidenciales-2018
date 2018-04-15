@@ -3,7 +3,7 @@ title: "Plato, cocina, receta, ingredientes"
 subtitle: "Un modelo base para las encuestas"
 author: "Nelson Amaya"
 output: 
-  html_document:
+  rmarkdown::github_document:
       theme: readable
 ---
 <br>
