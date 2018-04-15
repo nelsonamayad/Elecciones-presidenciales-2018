@@ -1,0 +1,267 @@
+---
+title: "Plato, cocina, receta, ingredientes"
+author: "[Nelson Amaya](https://twitter.com/NelsonAmayaD)"
+output: html_document
+---
+<br>
+Publicación: **16-04-2018**
+<br>
+Última actualización: **16-04-2018**
+<br>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+*"Far better an approximate answer to the right question, which is often vague, than the exact answer to the wrong question, which can always be made precise."* <br>
+- John Tukey
+<br>
+<br>
+Este es un ejercicio dinámico sobre las encuestas de intención de voto para las elecciones presidenciales de Colombia en 2018. Combina tres cosas chéveres: estadística bayesiana, reproducibilidad y computación open-source. Tiene la aspiración de ser una versión amateur de una de las cosas que más me han gustado de los últimos años: [esto de Pierre-Antoine Kremp  para las elecciones en EEUU de 2016](https://pkremp.github.io/report.html). 
+
+Acá se pone todo sobre la mesa. Hacer las cosas así permite que cualquiera pueda estimar el modelo, escudriñarlo, criticarlo y, ojalá, formular uno mejor. Seguramente está lleno de errores, así que haré todo lo posible por corregirlos conforme vayan apareciendo.
+
+Ya que los resultados se pueden interpretar como un pronóstico electoral, este reporte va en reversa. Primero el plato (los resultados), después los ingredientes (datos), luego la receta (modelo), y al final la preparación en la cocina (código). 
+
+Utiliza [RStan](http://mc-stan.org/users/interfaces/rstan) y lo demás se hace con el [tidyverse](https://www.tidyverse.org/) de [R](https://www.r-project.org/).
+
+Buen provecho
+
+***
+
+## Plato
+<br>
+Estos son los resultados del modelo. Son promedios de la distribución posterior estimada para cada candidato, así como el intervalo HPDI (higher posterior density interval) de 95% sobre ese parámetro. Para tener una referencia, el resultado se compara con dos promedios simples: uno sobre las 18 encuestas disponibles a la fecha que se han hecho durante 2018, y otro sobre las 8 encuestas que se han hecho después de las elecciones legislativas del 11 de marzo.
+
+```{r, echo=FALSE}
+library(tidyverse)
+
+#Plato servido
+plato <- tribble(~candidato,~int_voto,~int_voto_max,~int_voto_min,~m_2018,~m_03.2018,
+            "Sergio Fajardo",10.17,16.35,3.09,13.8,11.8,
+            "Gustavo Petro",17.88,22.29,14.04,21.9,25.2,
+            "Ivan Duque",36.04,44.15,27.88,23.8,37.6,
+            "Humberto de la Calle",3.19,6.81,0,4.67,3.62,
+            "German Vargas Lleras",10.08,14.18,5.39,8.44,7.35)
+
+#Orden                
+plato <- plato %>% mutate(candidato=factor(candidato,levels=c("Humberto de la Calle","German Vargas Lleras","Sergio Fajardo","Gustavo Petro","Ivan Duque")))
+
+```
+
+```{r, echo=FALSE}
+
+ggplot(plato, aes(x=candidato, color=candidato))+
+  #plato
+  geom_point(aes(y=int_voto))+
+  geom_text(aes(y=int_voto,label=format(int_voto, digits=2)),vjust=-1, size=5)+
+  geom_errorbar(aes(ymax=int_voto_max,ymin=int_voto_min,width=0.2))+
+  geom_hline(yintercept=c(10,20,30,40,50), linetype="dashed",color="grey60")+
+  #referencias
+  geom_point(aes(y=m_2018), shape=10, size=5)+
+  geom_text(aes(y=m_2018, label="2018",angle=90),size=2,hjust=1.6)+
+  geom_point(aes(y=m_03.2018), shape=9,size=5)+
+  geom_text(aes(y=m_03.2018, label="11.03.2018",angle=90),size=2,hjust=1.4)+
+  coord_flip()+
+  theme(legend.position="none",
+        panel.background=element_rect(fill="white", color="white"),
+        text = element_text(size=15))+
+  labs(x="",y="% de votos estimados - 1era vuelta")+
+  scale_y_continuous(limits = c(0,50),breaks=c(10,20,30,40,50))+
+  scale_color_manual(values=c("red4","red2","green4","gold2","orangered")) +
+  scale_fill_manual(values=c("red4","red2","green4","gold2", "orangered"))
+```
+
+***
+## Ingredientes
+<br>
+El modelo utiliza las encuestas que han salido hasta la última fecha de actualización. 
+
+Antes de las consultas del 11 de marzo, y de la adhesión de Juan Carlos Pinzón a la campaña de German Vargas Lleras (el 16 de marzo de 2016), las encuestas estaban identificando un conjunto ruidoso de candidatos. Por esa razón, este modelo solo tiene en cuenta las encuestas realizadas *después* de las elecciones legislativas. 
+
+#### *Encuestas*
+
+Los datos básicos de las encuestas se pueden importar desde GitHub con RCurl (ver abajo). Las tendencias en las encuestas se ven mejor [acá](https://nelsonamayad.shinyapps.io/col2018_tend/).
+
+#### *Priors*
+
+El modelo utiliza como priors para la estimación de un parámetro la proporción de votos promedio $\mu_{candidato}$ y la desviación estándar $\sigma_{candidato}$ que han registrado las encuestas para cada candidato. Los demás parámetros tienen priors poco informativos.
+
+``` {r, echo = T}
+library(RCurl)
+library(tidyverse)
+library(kableExtra)
+
+# Importar encuestas desde GitHub:
+encuestas <- read.csv(text=getURL("https://raw.githubusercontent.com/nelsonamayad/Elecciones-presidenciales-2018/master/Elecciones%202018/encuestas2018.csv"))
+
+# Preparar data frame para calcular priors
+priors <- encuestas %>% select(n,ivan_duque,gustavo_petro,sergio_fajardo,german_vargas_lleras,humberto_delacalle) %>% filter(n>26)
+priors <- priors %>% select(-n) %>% gather(candidato, int_voto)
+
+# Calcular priors
+priors <- priors %>% group_by(candidato) %>% mutate(prior_mu=mean(int_voto),prior_sigma=sd(int_voto))
+priors <- priors %>% distinct(prior_mu,prior_sigma) 
+
+# Tabla de priors
+priors %>% kable("html", caption = "Priors por candidato") %>% kable_styling(full_width = F)
+```
+
+***
+## Receta
+<br>
+El modelo parte del supuesto de que la proporción de votos $\pi$ que obtiene un candidato en las elecciones en el momento *t* es un reflejo de las preferencias que tiene la sociedad por ese candidato antes de las elecciones:
+<br>
+
+$$\pi_{candidato,t} \sim Normal(\pi_{candidato,t-1}, \sigma_{candidato,t-1})$$
+Como nadie es adivino para saber esas preferencias, solo se observan mediciones ruidosas de esa relación: las encuestas de intención de voto. Aunque no se puede conocer la proporción de votos que recibirá cada candidato antes del día de las elecciones (duh), esa proporción es una función de la proporción de intención de voto $\lambda$ que hayan capturado las encuestas que se hayan realizado antes de esa fecha.  
+
+$$\pi_{candidato,t-1} \sim Normal(\lambda_{candidato,t-1}, \sigma_{candidato,t-1})$$
+La proporción de votos para cada candidato se aproxima mediante un modelo lineal sobre las siguientes características de las encuestas: 1) el tamaño de la muestra de cada encuesta (*n*), 2) el márgen de error de la encuesta (*e*), 3) los días que pasaron entre la encuesta y la estimación (*d*), 4) una dummy para el tipo de encuesta (telefónica o presencial) (*tipo*). Además, se incluyen efectos aleatorios por encuestadora que permiten incorporar la variación a ese nivel.
+
+Esta perspectiva tiene muchas limitaciones. Las dos más importantes: no modela la determinación simultánea de la votación para todos los candidatos, ni el sesgo de respuesta de las encuestas. Ambas se pueden hacer pero por ahora quedan en el tintero. 
+
+***
+## Preparación
+<br>
+Este es el modelo completo, con los priors para cada parámetro. Los únicos priors informados son los que determinan el parámetro que captura el promedio y desviación estándar de cada candidato, y estos se actualizan con cada estimación del modelo cuando sale una nueva encuesta.
+
+#### *Modelo*
+
+$$\small \lambda_{candidato,t} \sim Normal(\mu_{candidato,t},\sigma_{candidato,t})$$
+$$\small \mu_{candidato,t} = \alpha_{t}+\alpha_{encuestadora}+\beta_1*m+\beta_2*e+\beta_3*d+\beta_4*tipo $$
+$$\small\alpha_{t} \sim Normal(\mu_{candidato},\sigma_{candidato}) $$
+$$\small\beta_1,\beta_2,\beta_3,\beta_4 \sim Normal(0,10) $$
+$$\small\beta_{encuestadora} \sim Normal(\mu, \sigma) $$
+$$\small\mu \sim Normal(0,10) $$
+$$\small\sigma \sim HalfCauchy(0,2) $$
+$$\small\sigma_{candidato} \sim HalfCauchy(0,2) $$
+
+#### *Alistamiento de los datos*
+
+Hay que hacer un par de ajustes a los datos de las encuestas antes de estimar el modelo:
+
+```{r, echo=T}
+library(lubridate)
+
+# Depurar encuestas
+df <- encuestas %>% select(n,fecha, encuestadora,ivan_duque,gustavo_petro,sergio_fajardo,german_vargas_lleras, humberto_delacalle, margen_error,tipo, muestra_int_voto)
+
+# Crear variable duracion:
+df <- df %>% mutate(dd = as.Date(as.character(today()), format="%Y-%m-%d") - as.Date(as.character(fecha), format="%Y-%m-%d"))
+df <- df %>% mutate(dd = as.numeric(dd))
+df <- df %>% mutate(dd = 100*(dd/sum(dd)))
+
+# Codificar encuestadoras y tipo de encuesta:
+factor(df$encuestadora)
+factor(df$tipo)
+
+# Otros ajustes:
+df <- df %>% rename(m_error = margen_error)
+
+# Pasar a formato largo:
+df <- df %>% gather(candidato, int_voto, n,fecha,muestra_int_voto,m_error,tipo)
+
+# Crear data frames por candidato:
+id <- df %>% filter(candidato=="ivan_duque") 
+gp <- df %>% filter(candidato=="gustavo_petro") 
+sf <- df %>% filter(candidato=="sergio_fajardo") 
+gvl <- df %>% filter(candidato=="german_vargas_lleras") 
+hdlc <- df %>% filter(candidato=="humberto_delacalle") 
+  
+```
+
+#### *Estimación*
+
+Este es el código para estimar el modelo para cada candidato. Solo se necesitan los datos cargados en R (ver siguiente sección) y tener el paquete RStan instalado ([ver instrucciones acá](https://github.com/stan-dev/rstan/wiki/RStan-Getting-Started))
+
+El muestreo del modelo se hace en Stan, que para cada candidato utiliza su respectivo data frame y priors. 
+
+Por ejemplo, para el candidato Sergio Fajardo se utiliza el data frame *sf* y los priors $\small\mu_{candidato}=14$ y $\small\sigma_{candidato}=4$:
+
+```{stan output.var="receta"}
+data{
+    int<lower=1> N;
+    int<lower=1> N_encuestadora;
+    real int_voto[N];
+    int encuestadora[N];
+    real muestra_int_voto[N];
+    real m_error[N];
+    real dd[N];
+    real tipo[N];
+}
+parameters{
+    real a1;
+    vector[N_encuestadora] a_;
+    real a_enc;
+    real<lower=0> s_enc;
+    real a2;
+    real a3;
+    real a4;
+    real a5;
+    real<lower=0> s;
+}
+model{
+    vector[N] m;
+    s ~ cauchy( 0 , 5 );
+    a5 ~ normal( 0 , 10 );
+    a4 ~ normal( 0 , 10 );
+    a3 ~ normal( 0 , 10 );
+    a2 ~ normal( 0 , 10 );
+    s_enc ~ cauchy( 0 , 5 );
+    a_enc ~ normal( 0 , 10 );
+    a_ ~ normal( a_enc , s_enc );
+    a1 ~ normal( 14 , 4 );
+    for ( i in 1:N ) {
+        m[i] = a1+a_[encuestadora[i]]+a2*muestra_int_voto[i]+a3*m_error[i]+a4*dd[i]+a5*tipo[i];
+    }
+    int_voto ~ normal( m , s );
+}
+generated quantities{
+    vector[N] m;
+    real dev;
+    dev = 0;
+    for ( i in 1:N ) {
+        m[i] = a1+a_[encuestadora[i]]+a2 * muestra_int_voto[i]+a3*m_error[i]+a4*dd[i]+a5*tipo[i];
+    }
+    dev = dev + (-2)*normal_lpdf( int_voto | m , s );
+}
+```
+
+El modelo converge rápido: es muy simple y tiene pocas observaciones. Para inspeccionarlo, sacar muestras y mirar contrafactuales simulados, no hay mejor juguete que [shinystan](https://github.com/stan-dev/shinystan). Eso, también, para otro dia.
+
+***
+## Algunas referencias
+<br>
+
+McElreath, R. (2015). [Statistical Rethinking](http://xcelab.net/rm/statistical-rethinking/) Texts in Statistical Science. (El capítulo 12 fue especialmente útil para hacer esto.)
+<br>
+<br>
+Gelman, A., Carlin, J. B., Stern, H. S., Dunson, D. B., Vehtari, A., & Rubin, D. B. (2014). Bayesian data analysis. Boca Raton, FL: CRC press.
+<br>
+<br>
+Stan Development Team (2016) [Stan Modeling Language: User’s Guide and Reference Manual. Version 2.14.0.](https://github.com/stan-dev/stan/releases/download/v2.17.0/stan-reference-2.17.0.pdf)
+<br>
+<br>
+Gelman, A., & Azari, J. (2017). [19 things we learned from the 2016 election.](https://www.tandfonline.com/doi/full/10.1080/2330443X.2017.1356775) Statistics and Public Policy, 4(1), 1-10.
+<br>
+<br>
+Gelman, A. (2006). [Prior distributions for variance parameters in hierarchical models (comment on article by Browne and Draper)](https://projecteuclid.org/download/pdf_1/euclid.ba/1340371048). Bayesian analysis, 1(3), pp.515-534.
+<br>
+<br>
+Linzer, D. A. (2013). [Dynamic Bayesian forecasting of presidential elections in the states](https://www.ocf.berkeley.edu/~vsheu/Midterm%202%20Project%20Files/Linzer-prespoll-May12.pdf). Journal of the American Statistical Association, 108(501), 124-134.
+<br>
+<br>
+Bunker, K., & Bauchowitz, S. (2016). [Electoral Forecasting and Public Opinion Tracking in Latin America: An Application to Chile. Política, 54(2).](http://www.redalyc.org/html/645/64551061008/)
+<br>
+<br>
+Shirani-Mehr, H., Rothschild, D., Goel, S., & Gelman, A. (2018). [Disentangling bias and variance in election polls.] (https://pdfs.semanticscholar.org/0e93/bb1c4cbea13ddd06cb8e44c8fb43a3a8357b.pdf) Journal of the American Statistical Association, (just-accepted), 1-23.
+<br>
+<br>
+Wickham, H., & Grolemund, G. (2016). [R for data science: import, tidy, transform, visualize, and model data.](http://r4ds.had.co.nz/) O'Reilly Media, Inc.
+<br>
+<br>
+[Esta entrada](https://modernstatisticalworkflow.blogspot.fr/2016/09/trump-for-president-aggregating.html) del blog de [Jim Savage](https://twitter.com/jim_savage_)
+<br>
+<br>
+[Esta visualización](http://chi-feng.github.io/mcmc-demo/) del muestreo que hacen algoritmos como Marvok Chain Monte Carlo, Metropolis-Hastings y el de Stan: No-U-Turn sampler
